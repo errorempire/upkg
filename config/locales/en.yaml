@@ -5,8 +5,10 @@ en:
     command_errors: "Command errors: %{errors}"
     command_exit_status: "Command exit status: %{status}"
     source_not_found: "Error: Source %{source_name} not found"
+  package:
+    add: "Package %{package_name} added to %{source_name}"
+    install: "Installing package: %{package}"
+    update: "Updating package: %{package}"
   separator: "----------------------------------------"
   source: "Source: %{name}"
-  installing_package: "Installing package: %{package}"
-  updating_package: "Updating package: %{package}"
   help: "Please provide an option. Use -h for help."

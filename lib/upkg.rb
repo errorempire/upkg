@@ -8,6 +8,8 @@ module Upkg
 
   require_relative 'upkg/package_installer'
   require_relative 'upkg/package_handler_factory'
+  require_relative 'upkg/package_data_manager'
+  require_relative 'upkg/package_operator'
   require_relative 'upkg/command_executor'
   require_relative 'upkg/version'
 

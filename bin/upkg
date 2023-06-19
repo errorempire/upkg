@@ -17,7 +17,7 @@ OptionParser.new do |opts|
     options[:update] = true
   end
 
-  opts.on('--add SOURCE', 'Add package to source') do |source|
+  opts.on('-a source package', '--add source package', 'Add package to source') do |source|
     options[:add] ||= []
     package = ARGV[0]
     ARGV.shift
