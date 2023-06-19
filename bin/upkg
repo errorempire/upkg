@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require_relative '../lib/upkg'
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = 'Usage: upkg [options]'
+
+  opts.on('-i', '--install', 'Install packages') do
+    options[:install] = true
+  end
+
+  opts.on('-u', '--update', 'Update packages') do
+    options[:update] = true
+  end
+end.parse!
+
+file_path = File.expand_path('../../packages.upkg', __FILE__)
+installer = Upkg::PackageInstaller.new(file_path)
+
+if options[:install]
+  installer.install_packages
+elsif options[:update]
+  installer.update_packages
+else
+  puts I18n.t('help').yellow
+end

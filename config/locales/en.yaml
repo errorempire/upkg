@@ -1,0 +1,11 @@
+en:
+  errors:
+    file_not_found: "Error: File not found at %{path}"
+    command_output: "Command output: %{output}"
+    command_errors: "Command errors: %{errors}"
+    command_exit_status: "Command exit status: %{status}"
+  separator: "----------------------------------------"
+  source: "Source: %{name}"
+  installing_package: "Installing package: %{package}"
+  updating_package: "Updating package: %{package}"
+  help: "Please provide an option. Use -h for help."

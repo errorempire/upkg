@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'fileutils'
+
+APP_ROOT = File.expand_path('..', __dir__)
+
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+def install_dependencies
+  puts '== Installing dependencies =='
+  system! 'gem install bundler --conservative'
+  system('bundle check') || system!('bundle install')
+end
+
+def build_gem
+  puts '== Building Gem =='
+  system! 'gem build upkg.gemspec'
+end
+
+def install_gem
+  puts '== Installing Gem =='
+  system! 'gem install upkg-*.gem'
+
+  puts "\n== Cleaning up =="
+  system! 'rm upkg-*.gem'
+end
+
+def uninstall_gem
+  puts '== Uninstalling Gem =='
+  system! 'gem uninstall upkg'
+end
+
+def available_arguments
+  <<~HELP
+    Available arguments:
+    - deps: Install project dependencies
+    - build: Build the gem
+    - install: Install the gem
+    - uninstall: Uninstall the gem
+  HELP
+end
+
+tasks = ARGV
+
+if tasks.empty?
+  puts available_arguments
+else
+  FileUtils.chdir APP_ROOT do
+    build_gem if tasks.include?('build')
+    install_gem if tasks.include?('install')
+    uninstall_gem if tasks.include?('uninstall')
+    install_dependencies if tasks.include?('deps')
+  end
+end
