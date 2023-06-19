@@ -2,72 +2,46 @@
 
 module Upkg
   class PackageInstaller
-    attr_reader :file_path, :handler_factory
+    attr_reader :handler_factory, :package_data_manager, :package_operator
 
     def initialize(file_path)
-      @file_path = file_path
       @handler_factory = PackageHandlerFactory.new
+      @package_data_manager = PackageDataManager.new(file_path)
+      @package_operator = PackageOperator.new(package_data_manager, handler_factory)
     end
 
     def install_packages
-      operate_packages(:install)
+      package_operator.operate_packages(:install)
     end
 
     def update_packages
-      operate_packages(:update)
+      package_operator.operate_packages(:update)
     end
 
-    private
-
-    def operate_packages(operation)
-      package_data = load_package_data
+    def add_package(source_name, package_name)
+      package_data = package_data_manager.load_package_data
       return unless package_data
 
-      package_data['source'].each do |source|
-        process_source(operation, source)
-      end
+      source = package_data_manager.find_source(package_data, source_name)
+      return unless source
+
+      package_data_manager.add_package_to_source(source, package_name)
+      package_data_manager.write_package_data(package_data)
+
+      puts I18n.t('package.add', package_name: package_name, source_name: source_name)
     end
 
-    def process_source(operation, source)
-      source_name = source['name']
-      handler = handler_factory.get_handler(source_name)
-      print_operation(operation, source_name)
+    def remove_package(source_name, package_name)
+      package_data = package_data_manager.load_package_data
+      return unless package_data
 
-      source['packages'].each do |package|
-        process_package(operation, package, handler)
-      end
-    end
+      source = package_data_manager.find_source(package_data, source_name)
+      return unless source
 
-    def process_package(operation, package, handler)
-      print_package(operation, package)
-      handler.send(operation, package)
-    end
+      package_data_manager.remove_package_from_source(source, package_name)
+      package_data_manager.write_package_data(package_data)
 
-    def load_package_data
-      unless File.exist?(file_path)
-        puts I18n.t('errors.file_not_found', path: file_path)
-        return
-      end
-
-      TomlRB.load_file(file_path)
-    end
-
-    def print_operation(operation, source_name)
-      case operation
-      when :install
-        puts I18n.t('source', name: source_name.yellow)
-      when :update
-        puts I18n.t('updating_source', name: source_name.blue)
-      end
-    end
-
-    def print_package(operation, package)
-      case operation
-      when :install
-        puts I18n.t('installing_package', package: package.green)
-      when :update
-        puts I18n.t('updating_package', package: package.yellow)
-      end
+      puts I18n.t('package.remove', package_name: package_name, source_name: source_name)
     end
   end
 end
