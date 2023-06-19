@@ -16,12 +16,23 @@ OptionParser.new do |opts|
   opts.on('-u', '--update', 'Update packages') do
     options[:update] = true
   end
+
+  opts.on('--add SOURCE', 'Add package to source') do |source|
+    options[:add] ||= []
+    package = ARGV[0]
+    ARGV.shift
+    options[:add] << [source, package]
+  end
 end.parse!
 
 file_path = File.expand_path('../../packages.upkg', __FILE__)
 installer = Upkg::PackageInstaller.new(file_path)
 
-if options[:install]
+if options[:add]
+  options[:add].each do |args|
+    installer.add_package(args[0], args[1])
+  end
+elsif options[:install]
   installer.install_packages
 elsif options[:update]
   installer.update_packages

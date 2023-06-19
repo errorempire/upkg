@@ -17,6 +17,19 @@ module Upkg
       operate_packages(:update)
     end
 
+    def add_package(source_name, package_name)
+      package_data = load_package_data
+      return unless package_data
+
+      source = find_source(package_data, source_name)
+      return unless source
+
+      add_package_to_source(source, package_name)
+      write_package_data(package_data)
+
+      puts "Package '#{package_name}' added to '#{source_name}'"
+    end
+
     private
 
     def operate_packages(operation)
@@ -50,6 +63,23 @@ module Upkg
       end
 
       TomlRB.load_file(file_path)
+    end
+
+    def find_source(package_data, source_name)
+      source = package_data['source'].find { |s| s['name'] == source_name }
+      unless source
+        puts I18n.t('errors.source_not_found', source_name: source_name)
+        return
+      end
+      source
+    end
+
+    def add_package_to_source(source, package_name)
+      source['packages'] << package_name
+    end
+
+    def write_package_data(package_data)
+      File.write(file_path, TomlRB.dump(package_data))
     end
 
     def print_operation(operation, source_name)

@@ -4,6 +4,7 @@ en:
     command_output: "Command output: %{output}"
     command_errors: "Command errors: %{errors}"
     command_exit_status: "Command exit status: %{status}"
+    source_not_found: "Error: Source %{source_name} not found"
   separator: "----------------------------------------"
   source: "Source: %{name}"
   installing_package: "Installing package: %{package}"
