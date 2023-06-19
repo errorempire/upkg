@@ -30,5 +30,18 @@ module Upkg
 
       puts I18n.t('package.add', package_name: package_name, source_name: source_name)
     end
+
+    def remove_package(source_name, package_name)
+      package_data = package_data_manager.load_package_data
+      return unless package_data
+
+      source = package_data_manager.find_source(package_data, source_name)
+      return unless source
+
+      package_data_manager.remove_package_from_source(source, package_name)
+      package_data_manager.write_package_data(package_data)
+
+      puts I18n.t('package.remove', package_name: package_name, source_name: source_name)
+    end
   end
 end

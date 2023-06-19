@@ -17,11 +17,18 @@ OptionParser.new do |opts|
     options[:update] = true
   end
 
-  opts.on('-a source package', '--add source package', 'Add package to source') do |source|
+  opts.on('-a source package', '--add source package', 'Add package') do |add_arg|
     options[:add] ||= []
     package = ARGV[0]
     ARGV.shift
-    options[:add] << [source, package]
+    options[:add] << [add_arg, package]
+  end
+
+  opts.on('-r source package', '--remove source package', 'Remove package') do |remove_args|
+    options[:remove] ||= []
+    package = ARGV[0]
+    ARGV.shift
+    options[:remove] << [remove_args, package]
   end
 end.parse!
 
@@ -29,8 +36,12 @@ file_path = File.expand_path('../../packages.upkg', __FILE__)
 installer = Upkg::PackageInstaller.new(file_path)
 
 if options[:add]
-  options[:add].each do |args|
-    installer.add_package(args[0], args[1])
+  options[:add].each do |source_name, package_name|
+    installer.add_package(source_name, package_name)
+  end
+elsif options[:remove]
+  options[:remove].each do |source_name, package_name|
+    installer.remove_package(source_name, package_name)
   end
 elsif options[:install]
   installer.install_packages

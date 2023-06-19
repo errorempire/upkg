@@ -1,5 +1,5 @@
 en:
-  errors:
+  error:
     file_not_found: "Error: File not found at %{path}"
     command_output: "Command output: %{output}"
     command_errors: "Command errors: %{errors}"
@@ -9,6 +9,7 @@ en:
     add: "Package %{package_name} added to %{source_name}"
     install: "Installing package: %{package}"
     update: "Updating package: %{package}"
+    remove: "Package %{package_name} removed from %{source_name}"
   separator: "----------------------------------------"
   source: "Source: %{name}"
   help: "Please provide an option. Use -h for help."
