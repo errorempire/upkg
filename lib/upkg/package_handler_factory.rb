@@ -2,17 +2,15 @@
 
 module Upkg
   class PackageHandlerFactory
+    HANDLER_MAPPING = {
+      'homebrew' => -> { PackageHandlers::HomebrewHandler.new },
+      'npm' => -> { PackageHandlers::NpmHandler.new },
+      'dart' => -> { PackageHandlers::DartHandler.new },
+      'gem' => -> { PackageHandlers::GemHandler.new }
+    }.freeze
+
     def get_handler(source)
-      case source
-      when 'homebrew'
-        PackageHandlers::HomebrewHandler.new
-      when 'npm'
-        PackageHandlers::NpmHandler.new
-      when 'dart'
-        PackageHandlers::DartHandler.new
-      else
-        raise "Unknown package source #{source}"
-      end
+      HANDLER_MAPPING[source] || raise("Unknown package source #{source}")
     end
   end
 end

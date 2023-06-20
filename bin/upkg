@@ -35,18 +35,15 @@ end.parse!
 file_path = File.expand_path('../../packages.upkg', __FILE__)
 installer = Upkg::PackageInstaller.new(file_path)
 
-if options[:add]
-  options[:add].each do |source_name, package_name|
-    installer.add_package(source_name, package_name)
-  end
-elsif options[:remove]
-  options[:remove].each do |source_name, package_name|
-    installer.remove_package(source_name, package_name)
-  end
-elsif options[:install]
-  installer.install_packages
-elsif options[:update]
-  installer.update_packages
-else
-  puts I18n.t('help').yellow
+installer.update_packages if options[:update]
+installer.install_packages if options[:install]
+
+options[:add]&.each do |source_name, package_name|
+  installer.add_package(source_name, package_name)
 end
+
+options[:remove]&.each do |source_name, package_name|
+  installer.remove_package(source_name, package_name)
+end
+
+puts I18n.t('help').yellow if options.empty? || (options.keys & %i[install update add remove]).empty?

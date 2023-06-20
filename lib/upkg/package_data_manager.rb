@@ -27,6 +27,7 @@ module Upkg
     end
 
     def add_package_to_source(source, package_name)
+      source['packages'] ||= []
       source['packages'] << package_name
     end
 
